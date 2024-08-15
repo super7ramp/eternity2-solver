@@ -38,9 +38,9 @@ final class Constraints {
 
     void addExactlyOnePiecePerPositionTo(final ISolver solver) throws ContradictionException {
         final var gator = new GateTranslator(solver);
+        final var positionPieces = new VecInt(problem.piecesCount());
         for (int rowIndex = 0; rowIndex < problem.rowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < problem.columnCount(); columnIndex++) {
-                final var positionPieces = new VecInt();
                 for (int pieceIndex = 0; pieceIndex < problem.piecesCount(); pieceIndex++) {
                     final var positionPieceRotations = new VecInt(Piece.Rotation.count());
                     for (final Piece.Rotation rotation : Piece.Rotation.all()) {
@@ -51,6 +51,7 @@ final class Constraints {
                     positionPieces.push(positionPiece);
                 }
                 solver.addExactly(positionPieces, 1);
+                positionPieces.clear();
             }
         }
     }
@@ -114,12 +115,12 @@ final class Constraints {
 
     void addBorderColorsMatchPiecesTo(final ISolver solver) throws ContradictionException {
         final var gator = new GateTranslator(solver);
+        final var pieceBorders = new VecInt(Piece.Border.count());
         for (int rowIndex = 0; rowIndex < problem.rowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < problem.columnCount(); columnIndex++) {
                 for (int pieceIndex = 0; pieceIndex < problem.piecesCount(); pieceIndex++) {
                     for (final Piece.Rotation rotation : Piece.Rotation.all()) {
                         final int pieceLit = variables.representingPiece(rowIndex, columnIndex, pieceIndex, rotation);
-                        final var pieceBorders = new VecInt(Piece.Border.count());
                         final Piece piece = problem.piece(pieceIndex).rotate(rotation);
                         for (final Piece.Border border : Piece.Border.all()) {
                             final int color = piece.colorTo(border);
@@ -130,6 +131,7 @@ final class Constraints {
                         gator.and(pieceBordersLit, pieceBorders);
                         // pieceLit => pieceBordersLit
                         solver.addClause(new VecInt(new int[]{-pieceLit, pieceBordersLit}));
+                        pieceBorders.clear();
                     }
                 }
             }
