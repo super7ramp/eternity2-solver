@@ -166,7 +166,7 @@ final class Variables {
      * @param model the model
      * @return the pieces
      */
-    public Piece[][] backToPieces(final int[] model) {
+    Piece[][] backToPieces(final int[] model) {
         final var pieces = new Piece[problem.rowCount()][problem.columnCount()];
         for (int rowIndex = 0; rowIndex < problem.rowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < problem.columnCount(); columnIndex++) {
