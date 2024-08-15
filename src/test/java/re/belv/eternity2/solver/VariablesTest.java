@@ -8,13 +8,13 @@ final class VariablesTest {
 
     @Test
     void representingPiece() {
-        final var problem = new Problem(new Piece[][]{
+        final var board = new Board(new Piece[][]{
                 {new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3), new Piece(2, 0, 1, 2, 3)},
                 {new Piece(3, 0, 1, 2, 3), new Piece(4, 0, 1, 2, 3), new Piece(5, 0, 1, 2, 3)},
                 {new Piece(6, 0, 1, 2, 3), new Piece(7, 0, 1, 2, 3), new Piece(8, 0, 1, 2, 3)},
 
         });
-        final var variables = new Variables(problem);
+        final var variables = new Variables(board);
 
         assertEquals(1, variables.representingPiece(0, 0, 0, Piece.Rotation.PLUS_0));
         assertEquals(2, variables.representingPiece(0, 0, 0, Piece.Rotation.PLUS_90));
@@ -31,25 +31,25 @@ final class VariablesTest {
 
     @Test
     void representingPieceCount() {
-        final var problem = new Problem(new Piece[][]{
+        final var board = new Board(new Piece[][]{
                 {new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3), new Piece(2, 0, 1, 2, 3)},
                 {new Piece(3, 0, 1, 2, 3), new Piece(4, 0, 1, 2, 3), new Piece(5, 0, 1, 2, 3)},
                 {new Piece(6, 0, 1, 2, 3), new Piece(7, 0, 1, 2, 3), new Piece(8, 0, 1, 2, 3)},
 
         });
-        final var variables = new Variables(problem);
+        final var variables = new Variables(board);
         assertEquals(324, variables.representingPieceCount());
     }
 
     @Test
     void representingBorder() {
-        final var problem = new Problem(new Piece[][]{
+        final var board = new Board(new Piece[][]{
                 {new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3), new Piece(2, 0, 1, 2, 3)},
                 {new Piece(3, 0, 1, 2, 3), new Piece(4, 0, 1, 2, 3), new Piece(5, 0, 1, 2, 3)},
                 {new Piece(6, 0, 1, 2, 3), new Piece(7, 0, 1, 2, 3), new Piece(8, 0, 1, 2, 3)},
 
         });
-        final var variables = new Variables(problem);
+        final var variables = new Variables(board);
 
         assertEquals(325, variables.representingBorder(0, 0, Piece.Border.NORTH, 0));
         assertEquals(326, variables.representingBorder(0, 0, Piece.Border.NORTH, 1));
@@ -66,25 +66,25 @@ final class VariablesTest {
 
     @Test
     void representingBorderCount() {
-        final var problem = new Problem(new Piece[][]{
+        final var board = new Board(new Piece[][]{
                 {new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3), new Piece(2, 0, 1, 2, 3)},
                 {new Piece(3, 0, 1, 2, 3), new Piece(4, 0, 1, 2, 3), new Piece(5, 0, 1, 2, 3)},
                 {new Piece(6, 0, 1, 2, 3), new Piece(7, 0, 1, 2, 3), new Piece(8, 0, 1, 2, 3)},
 
         });
-        final var variables = new Variables(problem);
+        final var variables = new Variables(board);
         assertEquals(144, variables.representingBorderCount());
     }
 
     @Test
     void variableCount() {
-        final var problem = new Problem(new Piece[][]{
+        final var board = new Board(new Piece[][]{
                 {new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3), new Piece(2, 0, 1, 2, 3)},
                 {new Piece(3, 0, 1, 2, 3), new Piece(4, 0, 1, 2, 3), new Piece(5, 0, 1, 2, 3)},
                 {new Piece(6, 0, 1, 2, 3), new Piece(7, 0, 1, 2, 3), new Piece(8, 0, 1, 2, 3)},
 
         });
-        final var variables = new Variables(problem);
+        final var variables = new Variables(board);
         assertEquals(144 + 324, variables.count());
     }
 }

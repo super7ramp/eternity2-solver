@@ -36,9 +36,9 @@ public final class Solver {
      *                                  etc.)
      */
     public Iterator<Piece[][]> solve(final Piece[][] pieces) {
-        final var problem = new Problem(pieces);
-        final var variables = new Variables(problem);
-        final var constraints = new Constraints(variables, problem);
+        final var board = new Board(pieces);
+        final var variables = new Variables(board);
+        final var constraints = new Constraints(variables, board);
 
         backend.reset();
         backend.newVar(variables.count());

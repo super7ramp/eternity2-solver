@@ -1,20 +1,20 @@
 package re.belv.eternity2.solver;
 
 /**
- * Where the translation between the problem and the variables occurs.
+ * Where the translation between the board and the variables occurs.
  */
 final class Variables {
 
     /** The problem to solve. */
-    private final Problem problem;
+    private final Board board;
 
     /**
      * Constructs an instance.
      *
-     * @param problem the problem to solve
+     * @param board the board to solve
      */
-    Variables(final Problem problem) {
-        this.problem = problem;
+    Variables(final Board board) {
+        this.board = board;
     }
 
     /**
@@ -60,17 +60,17 @@ final class Variables {
      * @return the variable
      */
     int representingPiece(final int rowIndex, final int columnIndex, final int pieceIndex, final Piece.Rotation rotation) {
-        if (rowIndex >= problem.rowCount()) {
+        if (rowIndex >= board.rowCount()) {
             throw new IllegalArgumentException("Row index out of bounds: " + rowIndex);
         }
-        if (columnIndex >= problem.columnCount()) {
+        if (columnIndex >= board.columnCount()) {
             throw new IllegalArgumentException("Column index out of bounds: " + columnIndex);
         }
-        if (pieceIndex >= problem.piecesCount()) {
+        if (pieceIndex >= board.piecesCount()) {
             throw new IllegalArgumentException("Piece index out of bounds: " + pieceIndex);
         }
-        return rowIndex * problem.columnCount() * problem.piecesCount() * Piece.Rotation.count()
-                + columnIndex * problem.piecesCount() * Piece.Rotation.count()
+        return rowIndex * board.columnCount() * board.piecesCount() * Piece.Rotation.count()
+                + columnIndex * board.piecesCount() * Piece.Rotation.count()
                 + pieceIndex * Piece.Rotation.count()
                 + rotation.ordinal()
                 + 1; // variables start at 1
@@ -82,7 +82,7 @@ final class Variables {
      * @return the  number variables representing pieces
      */
     int representingPieceCount() {
-        return problem.rowCount() * problem.columnCount() * problem.piecesCount() * Piece.Rotation.count();
+        return board.rowCount() * board.columnCount() * board.piecesCount() * Piece.Rotation.count();
     }
 
     /**
@@ -126,19 +126,19 @@ final class Variables {
      * @return the variable of the given color at the given border at the given row and column.
      */
     int representingBorder(final int rowIndex, final int columnIndex, final Piece.Border border, final int colorIndex) {
-        if (rowIndex >= problem.rowCount()) {
+        if (rowIndex >= board.rowCount()) {
             throw new IllegalArgumentException("Row index out of bounds: " + rowIndex);
         }
-        if (columnIndex >= problem.columnCount()) {
+        if (columnIndex >= board.columnCount()) {
             throw new IllegalArgumentException("Column index out of bounds: " + columnIndex);
         }
-        if (colorIndex >= problem.colorCount()) {
+        if (colorIndex >= board.colorCount()) {
             throw new IllegalArgumentException("Color index out of bounds: " + colorIndex);
         }
         return representingPieceCount() + 1
-                + rowIndex * problem.columnCount() * Piece.Border.count() * problem.colorCount()
-                + columnIndex * Piece.Border.count() * problem.colorCount()
-                + border.ordinal() * problem.colorCount()
+                + rowIndex * board.columnCount() * Piece.Border.count() * board.colorCount()
+                + columnIndex * Piece.Border.count() * board.colorCount()
+                + border.ordinal() * board.colorCount()
                 + colorIndex;
     }
 
@@ -148,7 +148,7 @@ final class Variables {
      * @return the number of variables representing borders
      */
     int representingBorderCount() {
-        return problem.colorCount() * problem.borderCount();
+        return board.colorCount() * board.borderCount();
     }
 
     /**
@@ -161,20 +161,20 @@ final class Variables {
     }
 
     /**
-     * Translates model back to pieces.
+     * Translates SAT model back to pieces.
      *
      * @param model the model
      * @return the pieces
      */
     Piece[][] backToPieces(final int[] model) {
-        final var pieces = new Piece[problem.rowCount()][problem.columnCount()];
-        for (int rowIndex = 0; rowIndex < problem.rowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < problem.columnCount(); columnIndex++) {
-                for (int pieceNumber = 0; pieceNumber < problem.piecesCount(); pieceNumber++) {
+        final var pieces = new Piece[board.rowCount()][board.columnCount()];
+        for (int rowIndex = 0; rowIndex < board.rowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < board.columnCount(); columnIndex++) {
+                for (int pieceNumber = 0; pieceNumber < board.piecesCount(); pieceNumber++) {
                     for (final Piece.Rotation rotation : Piece.Rotation.all()) {
                         final int slotVariable = representingPiece(rowIndex, columnIndex, pieceNumber, rotation);
                         if (model[slotVariable - 1] > 0) {
-                            final Piece piece = problem.piece(pieceNumber).rotate(rotation);
+                            final Piece piece = board.piece(pieceNumber).rotate(rotation);
                             pieces[rowIndex][columnIndex] = piece;
                         }
                     }

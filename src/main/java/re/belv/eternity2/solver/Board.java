@@ -3,12 +3,12 @@ package re.belv.eternity2.solver;
 import java.util.HashSet;
 import java.util.Objects;
 
-final class Problem {
+final class Board {
 
     private final Piece[][] pieces;
     private final int[] colors;
 
-    Problem(final Piece[][] pieces) {
+    Board(final Piece[][] pieces) {
         Objects.requireNonNull(pieces);
         final var colorSet = new HashSet<Integer>();
         for (final Piece[] row : pieces) {
