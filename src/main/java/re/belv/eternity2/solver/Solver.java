@@ -1,6 +1,6 @@
 package re.belv.eternity2.solver;
 
-import org.sat4j.pb.SolverFactory;
+import org.sat4j.minisat.SolverFactory;
 import org.sat4j.specs.ContradictionException;
 import org.sat4j.specs.ISolver;
 import org.sat4j.specs.TimeoutException;
@@ -24,7 +24,7 @@ public final class Solver {
      * Creates an instance.
      */
     public Solver() {
-        this.backend = SolverFactory.newDefault();
+        this.backend = SolverFactory.newLight();
     }
 
     /**
