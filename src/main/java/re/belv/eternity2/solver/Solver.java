@@ -3,12 +3,9 @@ package re.belv.eternity2.solver;
 import org.sat4j.minisat.SolverFactory;
 import org.sat4j.specs.ContradictionException;
 import org.sat4j.specs.ISolver;
-import org.sat4j.specs.TimeoutException;
-import org.sat4j.tools.ModelIterator;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * A solver for the eternity2 problem.
@@ -51,25 +48,6 @@ public final class Solver {
             return Collections.emptyIterator();
         }
 
-        final var modelIterator = new ModelIterator(backend);
-        return new Iterator<>() {
-            @Override
-            public boolean hasNext() {
-                try {
-                    return modelIterator.isSatisfiable();
-                } catch (final TimeoutException e) {
-                    return false;
-                }
-            }
-
-            @Override
-            public Piece[][] next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException("No solution found.");
-                }
-                final int[] model = modelIterator.model();
-                return variables.backToPieces(model);
-            }
-        };
+        return new SolutionIterator(variables, backend);
     }
 }
