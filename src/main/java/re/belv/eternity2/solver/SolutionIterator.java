@@ -7,15 +7,29 @@ import org.sat4j.tools.ModelIterator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * An iterator of solver solutions.
+ */
 final class SolutionIterator implements Iterator<Piece[][]> {
 
+    /** The problem variables. */
     private final Variables variables;
-    private final ModelIterator modelIterator;
+
+    /** The solver backend decorated with {@link ModelIterator}. */
+    private final ISolver backend;
+
+    /** The model to return on call to {@link #next()}. */
     private int[] nextModel;
 
+    /**
+     * Constructs an instance.
+     *
+     * @param variables the problem variables
+     * @param backend   the solver backend
+     */
     SolutionIterator(final Variables variables, final ISolver backend) {
         this.variables = variables;
-        this.modelIterator = new ModelIterator(backend);
+        this.backend = new ModelIterator(backend);
     }
 
     @Override
@@ -38,9 +52,9 @@ final class SolutionIterator implements Iterator<Piece[][]> {
             return nextModel;
         }
         try {
-            final boolean isSatisfiable = modelIterator.isSatisfiable();
+            final boolean isSatisfiable = backend.isSatisfiable();
             if (isSatisfiable) {
-                nextModel = modelIterator.model();
+                nextModel = backend.model();
             }
         } catch (final TimeoutException e) {
             // ignore

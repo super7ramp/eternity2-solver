@@ -3,11 +3,20 @@ package re.belv.eternity2.solver;
 import java.util.HashSet;
 import java.util.Objects;
 
+/**
+ * A representation of the board game.
+ */
 final class Board {
 
     private final Piece[][] pieces;
     private final int[] colors;
 
+    /**
+     * Constructs an instance.
+     *
+     * @param pieces the board pieces
+     * @throws NullPointerException if any of the given pieces is {@code null}
+     */
     Board(final Piece[][] pieces) {
         Objects.requireNonNull(pieces);
         final var colorSet = new HashSet<Integer>();

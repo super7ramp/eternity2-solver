@@ -1,7 +1,15 @@
 package re.belv.eternity2.solver;
 
 /**
- * Where the translation between the board and the variables occurs.
+ * Where the translation between the board and the boolean variables occurs.
+ * <p>
+ * There are two types of variables:
+ * <ol>
+ *     <li><strong>Variables representing pieces</strong>: Define whether a piece in a certain orientation is present
+ *     in a certain location.</li>
+ *     <li><strong>Variables representing borders</strong>: Define whether a border in a certain location has a certain
+ *     color.</li>
+ * </ol>
  */
 final class Variables {
 
@@ -22,7 +30,7 @@ final class Variables {
      * <table>
      *     <caption>Variable representation for a 3x3 grid</caption>
      *   <tr>
-     *     <th>Slot variable</th>
+     *     <th>Piece variable</th>
      *     <td>1</td>
      *     <td>2</td>
      *     <td>3</td>
@@ -37,7 +45,7 @@ final class Variables {
      *     <td>144</td>
      *   </tr>
      *   <tr>
-     *     <th>Represented value</th>
+     *     <th>Represented piece</th>
      *     <td>(0,0): Piece #0, +0°</td>
      *     <td>(0,0): Piece #0, +90°</td>
      *     <td>(0,0): Piece #0, +180°</td>
@@ -77,9 +85,9 @@ final class Variables {
     }
 
     /**
-     * Returns the number variables representing pieces.
+     * Returns the number of variables representing pieces.
      *
-     * @return the  number variables representing pieces
+     * @return the  number of variables representing pieces
      */
     int representingPieceCount() {
         return board.rowCount() * board.columnCount() * board.piecesCount() * Piece.Rotation.count();
@@ -90,7 +98,7 @@ final class Variables {
      * <table>
      *     <caption>Variable representation for a 3x3 grid with 4 colors</caption>
      *   <tr>
-     *     <th>Color variable</th>
+     *     <th>Border variable</th>
      *     <td>325</td>
      *     <td>326</td>
      *     <td>327</td>
@@ -104,7 +112,7 @@ final class Variables {
      *     <td>468</td>
      *   </tr>
      *   <tr>
-     *     <th>Represented value</th>
+     *     <th>Represented border</th>
      *     <td>(0,0), North: Color #0</td>
      *     <td>(0,0), North: Color #1</td>
      *     <td>(0,0), North: Color #2</td>
@@ -170,11 +178,11 @@ final class Variables {
         final var pieces = new Piece[board.rowCount()][board.columnCount()];
         for (int rowIndex = 0; rowIndex < board.rowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < board.columnCount(); columnIndex++) {
-                for (int pieceNumber = 0; pieceNumber < board.piecesCount(); pieceNumber++) {
+                for (int pieceIndex = 0; pieceIndex < board.piecesCount(); pieceIndex++) {
                     for (final Piece.Rotation rotation : Piece.Rotation.all()) {
-                        final int slotVariable = representingPiece(rowIndex, columnIndex, pieceNumber, rotation);
-                        if (model[slotVariable - 1] > 0) {
-                            final Piece piece = board.piece(pieceNumber).rotate(rotation);
+                        final int pieceVariable = representingPiece(rowIndex, columnIndex, pieceIndex, rotation);
+                        if (model[pieceVariable - 1] > 0) {
+                            final Piece piece = board.piece(pieceIndex).rotate(rotation);
                             pieces[rowIndex][columnIndex] = piece;
                         }
                     }

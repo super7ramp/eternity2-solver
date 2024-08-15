@@ -17,31 +17,61 @@ public record Piece(int id, int northColor, int eastColor, int southColor, int w
      * A piece border.
      */
     enum Border {
-        NORTH, EAST, SOUTH, WEST;
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST;
 
         private static final List<Border> CACHED_VALUES = List.of(values());
 
+        /**
+         * Returns all the piece borders.
+         *
+         * @return all the piece borders
+         */
         static Iterable<Border> all() {
             return CACHED_VALUES;
         }
 
+        /**
+         * Returns the number of piece borders.
+         *
+         * @return the number of piece borders
+         */
         static int count() {
             return CACHED_VALUES.size();
         }
     }
 
     /**
-     * A piece rotation.
+     * A piece clockwise rotation.
      */
     enum Rotation {
-        PLUS_0, PLUS_90, PLUS_180, PLUS_270;
+        /** No rotation. */
+        PLUS_0,
+        /** 90 degrees rotation. */
+        PLUS_90,
+        /** 180 degrees rotation. */
+        PLUS_180,
+        /** 270 degrees rotation. */
+        PLUS_270;
 
         private static final List<Rotation> CACHED_VALUES = List.of(values());
 
+        /**
+         * Returns all the rotations.
+         *
+         * @return all the rotations
+         */
         static Iterable<Rotation> all() {
             return CACHED_VALUES;
         }
 
+        /**
+         * Returns the number of rotations.
+         *
+         * @return the number of rotations
+         */
         static int count() {
             return CACHED_VALUES.size();
         }

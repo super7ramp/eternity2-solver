@@ -6,14 +6,17 @@ import org.sat4j.specs.ISolver;
 import org.sat4j.tools.GateTranslator;
 
 /**
- * Where constraints are built and added to the solver.
- * <p>
- * In an ideal world, this class would only be a factory of constraints but given there may be a lot of them it is more
- * memory efficient to build them and add them to the solver in one go.
+ * Where the game constraints are built and added to the solver.
+ *
+ * @apiNote In an ideal world, this class would only be a factory of clauses but given there may be a lot of them it is
+ * more memory efficient to build them and add them to the solver in one go.
  */
 final class Constraints {
 
+    /** The problem variables. */
     private final Variables variables;
+
+    /** The board. */
     private final Board board;
 
     /**
@@ -27,6 +30,12 @@ final class Constraints {
         this.board = board;
     }
 
+    /**
+     * Adds all constraints to the given solver.
+     *
+     * @param solver the solver
+     * @throws ContradictionException if a constraint is trivially unsatisfiable
+     */
     void addAllConstraintsTo(final ISolver solver) throws ContradictionException {
         addExactlyOnePiecePerPositionTo(solver);
         addExactlyOnePositionPerPieceTo(solver);
@@ -36,6 +45,12 @@ final class Constraints {
         addMiddlePieceDoesNotMoveTo(solver);
     }
 
+    /**
+     * Constrains the given solver so that there is exactly one piece in each position.
+     *
+     * @param solver the solver
+     * @throws ContradictionException when a constraint is trivially unsatisfiable
+     */
     void addExactlyOnePiecePerPositionTo(final ISolver solver) throws ContradictionException {
         final var gator = new GateTranslator(solver);
         final var positionPieces = new VecInt(board.piecesCount());
@@ -56,6 +71,13 @@ final class Constraints {
         }
     }
 
+    /**
+     * Constrains the given solver so that there is exactly one position for each piece (i.e. a piece cannot be in two
+     * positions in the same time).
+     *
+     * @param solver the solver
+     * @throws ContradictionException when a constraint is trivially unsatisfiable
+     */
     void addExactlyOnePositionPerPieceTo(final ISolver solver) throws ContradictionException {
         final var piecePositions = new VecInt(board.rowCount() * board.columnCount() * Piece.Rotation.count());
         for (int pieceIndex = 0; pieceIndex < board.piecesCount(); pieceIndex++) {
@@ -71,6 +93,13 @@ final class Constraints {
         }
     }
 
+    /**
+     * Constrains the given solver so that there is exactly one color per border (i.e. the same border cannot have two
+     * colors at the same time).
+     *
+     * @param solver the solver
+     * @throws ContradictionException when a constraint is trivially unsatisfiable
+     */
     void addExactlyOneColorPerBorderTo(final ISolver solver) throws ContradictionException {
         final var borderColors = new VecInt(board.colorCount());
         for (int rowIndex = 0; rowIndex < board.rowCount(); rowIndex++) {
@@ -86,6 +115,12 @@ final class Constraints {
         }
     }
 
+    /**
+     * Constrains the solver so that adjacent borders has the same color.
+     *
+     * @param solver the solver
+     * @throws ContradictionException when a constraint is trivially unsatisfiable
+     */
     void addAdjacentBordersMustHaveSameColorTo(final ISolver solver) throws ContradictionException {
         // east-west
         for (int row = 0; row < board.rowCount(); row++) {
@@ -113,6 +148,14 @@ final class Constraints {
         }
     }
 
+    /**
+     * Constrains the solver so that the colors of the borders match the colors of the pieces.
+     * <p>
+     * This is here that the two kinds of {@link Variables} (pieces and borders) are linked.
+     *
+     * @param solver the solver
+     * @throws ContradictionException when a constraint is trivially unsatisfiable
+     */
     void addBorderColorsMatchPiecesTo(final ISolver solver) throws ContradictionException {
         final var gator = new GateTranslator(solver);
         final var pieceBorders = new VecInt(Piece.Border.count());
