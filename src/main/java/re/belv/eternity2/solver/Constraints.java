@@ -5,6 +5,8 @@ import org.sat4j.specs.ContradictionException;
 import org.sat4j.specs.ISolver;
 import org.sat4j.tools.GateTranslator;
 
+import java.util.Optional;
+
 /**
  * Where the game constraints are built and added to the solver.
  *
@@ -23,7 +25,7 @@ final class Constraints {
      * Constructs an instance.
      *
      * @param variables the problem variables
-     * @param game     the board
+     * @param game      the board
      */
     Constraints(final Variables variables, final Game game) {
         this.variables = variables;
@@ -42,7 +44,7 @@ final class Constraints {
         addExactlyOneColorPerBorderTo(solver);
         addAdjacentBordersMustHaveSameColorTo(solver);
         addBorderColorsMatchPiecesTo(solver);
-        addMiddlePieceDoesNotMoveTo(solver);
+        addInitialBoardPiecesAreFixedTo(solver);
     }
 
     /**
@@ -181,8 +183,24 @@ final class Constraints {
         }
     }
 
-    // TODO implement this
-    void addMiddlePieceDoesNotMoveTo(final ISolver solver) {
-        // the middle piece shall not move
+    /**
+     * Constrains the solver so that the pieces on the initial board are fixed.
+     *
+     * @param solver the solver
+     * @throws ContradictionException if a constraint is trivially unsatisfiable
+     */
+    void addInitialBoardPiecesAreFixedTo(final ISolver solver) throws ContradictionException {
+        for (int rowIndex = 0; rowIndex < game.rowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < game.columnCount(); columnIndex++) {
+                final Optional<Piece> fixedPiece = game.initialBoardPiece(rowIndex, columnIndex);
+                if (fixedPiece.isPresent()) {
+                    final int pieceIndex = fixedPiece.get().id();
+                    final Piece originalPiece = game.piece(pieceIndex);
+                    final Piece.Rotation rotation = originalPiece.rotationTo(fixedPiece.get());
+                    final int pieceLit = variables.representingPiece(rowIndex, columnIndex, pieceIndex, rotation);
+                    solver.addClause(new VecInt(new int[]{pieceLit}));
+                }
+            }
+        }
     }
 }

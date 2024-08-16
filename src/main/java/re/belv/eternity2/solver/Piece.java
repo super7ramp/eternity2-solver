@@ -106,4 +106,23 @@ public record Piece(int id, int northColor, int eastColor, int southColor, int w
             case PLUS_270 -> new Piece(id, eastColor, southColor, westColor, northColor);
         };
     }
+
+    /**
+     * Returns the rotation to apply to this piece to get the given piece.
+     *
+     * @param piece the piece to get
+     * @return the rotation to apply to this piece to get the given piece
+     * @throws IllegalArgumentException if the given piece is not a rotation of this piece
+     */
+    Rotation rotationTo(final Piece piece) {
+        if (piece.id() != id) {
+            throw new IllegalArgumentException("Different piece ids: " + id + " != " + piece.id());
+        }
+        for (final Rotation rotation : Rotation.all()) {
+            if (rotate(rotation).equals(piece)) {
+                return rotation;
+            }
+        }
+        throw new IllegalArgumentException(this + " is not a rotation of this piece: " + piece);
+    }
 }

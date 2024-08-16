@@ -2,6 +2,7 @@ package re.belv.eternity2.solver;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 /**
@@ -10,6 +11,7 @@ import java.util.stream.IntStream;
 final class Game {
 
     private final Piece[] pieces;
+    private final Piece[][] initialBoard;
     private final int rowCount;
     private final int columnCount;
     private final int[] colors;
@@ -17,17 +19,18 @@ final class Game {
     /**
      * Constructs an instance.
      *
-     * @param pieces      the available pieces
-     * @param initialGrid the initial board; Any non-{@code null} piece is considered as fixed and will not be moved
+     * @param pieces       the available pieces
+     * @param initialBoard the initial board; Any non-{@code null} piece is considered as fixed and will not be moved
      * @throws NullPointerException     if any argument {@code null}
      * @throws IllegalArgumentException if the number of pieces is inconsistent with the given row and column counts
      */
-    Game(final Piece[] pieces, final Piece[][] initialGrid) {
+    Game(final Piece[] pieces, final Piece[][] initialBoard) {
         Objects.requireNonNull(pieces);
-        Objects.requireNonNull(initialGrid);
+        Objects.requireNonNull(initialBoard);
         this.pieces = pieces;
-        this.rowCount = initialGrid.length;
-        this.columnCount = rowCount == 0 ? 0 : initialGrid[0].length;
+        this.initialBoard = initialBoard;
+        this.rowCount = initialBoard.length;
+        this.columnCount = rowCount == 0 ? 0 : initialBoard[0].length;
         if (rowCount * columnCount != pieces.length) {
             throw new IllegalArgumentException("Inconsistent number of pieces: " + pieces.length + " != " + rowCount + " * " + columnCount);
         }
@@ -39,6 +42,10 @@ final class Game {
 
     Piece piece(final int pieceNumber) {
         return pieces[pieceNumber];
+    }
+
+    Optional<Piece> initialBoardPiece(final int rowIndex, final int columnIndex) {
+        return Optional.ofNullable(initialBoard[rowIndex][columnIndex]);
     }
 
     int rowCount() {
