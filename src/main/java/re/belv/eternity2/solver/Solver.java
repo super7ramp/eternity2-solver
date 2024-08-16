@@ -38,20 +38,21 @@ public final class Solver {
     }
 
     /**
-     * Solves the given pieces.
+     * Solves the given game.
      * <p>
      * The search for solution is performed lazily, upon call to the {@link Iterator#hasNext() hasNext} or
      * {@link Iterator#next() next} method of the returned solution {@link Iterator}.
      * <p>
      * A second call to this method will reset the solver and make the iterator returned on first call invalid.
      *
-     * @param pieces the pieces representing the initial board
+     * @param pieces       the available pieces
+     * @param initialBoard the initial board; Any non-{@code null} piece is considered as fixed and will not be moved
      * @return an iterator on the solutions (the pieces representing the solved board)
-     * @throws NullPointerException     if any of the given pieces is {@code null}
-     * @throws IllegalArgumentException if given pieces are invalid (e.g. with inconsistent row lengths)
+     * @throws NullPointerException     if any argument is {@code null}
+     * @throws IllegalArgumentException if given game is invalid (e.g. number of pieces inconsistent with board dimensions)
      */
-    public Iterator<Piece[][]> solve(final Piece[][] pieces) {
-        final var board = new Board(pieces);
+    public Iterator<Piece[][]> solve(final Piece[] pieces, final Piece[][] initialBoard) {
+        final var board = new Game(pieces, initialBoard);
         final var variables = new Variables(board);
         final var constraints = new Constraints(variables, board);
 

@@ -17,17 +17,17 @@ final class Constraints {
     private final Variables variables;
 
     /** The board. */
-    private final Board board;
+    private final Game game;
 
     /**
      * Constructs an instance.
      *
      * @param variables the problem variables
-     * @param board     the board
+     * @param game     the board
      */
-    Constraints(final Variables variables, final Board board) {
+    Constraints(final Variables variables, final Game game) {
         this.variables = variables;
-        this.board = board;
+        this.game = game;
     }
 
     /**
@@ -53,10 +53,10 @@ final class Constraints {
      */
     void addExactlyOnePiecePerPositionTo(final ISolver solver) throws ContradictionException {
         final var gator = new GateTranslator(solver);
-        final var positionPieces = new VecInt(board.piecesCount());
-        for (int rowIndex = 0; rowIndex < board.rowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < board.columnCount(); columnIndex++) {
-                for (int pieceIndex = 0; pieceIndex < board.piecesCount(); pieceIndex++) {
+        final var positionPieces = new VecInt(game.piecesCount());
+        for (int rowIndex = 0; rowIndex < game.rowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < game.columnCount(); columnIndex++) {
+                for (int pieceIndex = 0; pieceIndex < game.piecesCount(); pieceIndex++) {
                     final var positionPieceRotations = new VecInt(Piece.Rotation.count());
                     for (final Piece.Rotation rotation : Piece.Rotation.all()) {
                         positionPieceRotations.push(variables.representingPiece(rowIndex, columnIndex, pieceIndex, rotation));
@@ -79,10 +79,10 @@ final class Constraints {
      * @throws ContradictionException when a constraint is trivially unsatisfiable
      */
     void addExactlyOnePositionPerPieceTo(final ISolver solver) throws ContradictionException {
-        final var piecePositions = new VecInt(board.rowCount() * board.columnCount() * Piece.Rotation.count());
-        for (int pieceIndex = 0; pieceIndex < board.piecesCount(); pieceIndex++) {
-            for (int rowIndex = 0; rowIndex < board.rowCount(); rowIndex++) {
-                for (int columnIndex = 0; columnIndex < board.columnCount(); columnIndex++) {
+        final var piecePositions = new VecInt(game.rowCount() * game.columnCount() * Piece.Rotation.count());
+        for (int pieceIndex = 0; pieceIndex < game.piecesCount(); pieceIndex++) {
+            for (int rowIndex = 0; rowIndex < game.rowCount(); rowIndex++) {
+                for (int columnIndex = 0; columnIndex < game.columnCount(); columnIndex++) {
                     for (final Piece.Rotation rotation : Piece.Rotation.all()) {
                         piecePositions.push(variables.representingPiece(rowIndex, columnIndex, pieceIndex, rotation));
                     }
@@ -101,11 +101,11 @@ final class Constraints {
      * @throws ContradictionException when a constraint is trivially unsatisfiable
      */
     void addExactlyOneColorPerBorderTo(final ISolver solver) throws ContradictionException {
-        final var borderColors = new VecInt(board.colorCount());
-        for (int rowIndex = 0; rowIndex < board.rowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < board.columnCount(); columnIndex++) {
+        final var borderColors = new VecInt(game.colorCount());
+        for (int rowIndex = 0; rowIndex < game.rowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < game.columnCount(); columnIndex++) {
                 for (final Piece.Border border : Piece.Border.all()) {
-                    for (int colorIndex = 0; colorIndex < board.colorCount(); colorIndex++) {
+                    for (int colorIndex = 0; colorIndex < game.colorCount(); colorIndex++) {
                         borderColors.push(variables.representingBorder(rowIndex, columnIndex, border, colorIndex));
                     }
                     solver.addExactly(borderColors, 1);
@@ -123,9 +123,9 @@ final class Constraints {
      */
     void addAdjacentBordersMustHaveSameColorTo(final ISolver solver) throws ContradictionException {
         // east-west
-        for (int row = 0; row < board.rowCount(); row++) {
-            for (int column = 0; column < board.columnCount() - 1; column++) {
-                for (int color = 0; color < board.colorCount(); color++) {
+        for (int row = 0; row < game.rowCount(); row++) {
+            for (int column = 0; column < game.columnCount() - 1; column++) {
+                for (int color = 0; color < game.colorCount(); color++) {
                     final int eastBorder = variables.representingBorder(row, column, Piece.Border.EAST, color);
                     final int neighborWestBorder = variables.representingBorder(row, column + 1, Piece.Border.WEST, color);
                     // eastBorder <=> neighborWestBorder
@@ -135,9 +135,9 @@ final class Constraints {
             }
         }
         // north-south
-        for (int rowIndex = 0; rowIndex < board.rowCount() - 1; rowIndex++) {
-            for (int columnIndex = 0; columnIndex < board.columnCount(); columnIndex++) {
-                for (int colorIndex = 0; colorIndex < board.colorCount(); colorIndex++) {
+        for (int rowIndex = 0; rowIndex < game.rowCount() - 1; rowIndex++) {
+            for (int columnIndex = 0; columnIndex < game.columnCount(); columnIndex++) {
+                for (int colorIndex = 0; colorIndex < game.colorCount(); colorIndex++) {
                     final int southBorder = variables.representingBorder(rowIndex, columnIndex, Piece.Border.SOUTH, colorIndex);
                     final int neighborNorthBorder = variables.representingBorder(rowIndex + 1, columnIndex, Piece.Border.NORTH, colorIndex);
                     // southBorder <=> neighborNorthBorder
@@ -159,12 +159,12 @@ final class Constraints {
     void addBorderColorsMatchPiecesTo(final ISolver solver) throws ContradictionException {
         final var gator = new GateTranslator(solver);
         final var pieceBorders = new VecInt(Piece.Border.count());
-        for (int rowIndex = 0; rowIndex < board.rowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < board.columnCount(); columnIndex++) {
-                for (int pieceIndex = 0; pieceIndex < board.piecesCount(); pieceIndex++) {
+        for (int rowIndex = 0; rowIndex < game.rowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < game.columnCount(); columnIndex++) {
+                for (int pieceIndex = 0; pieceIndex < game.piecesCount(); pieceIndex++) {
                     for (final Piece.Rotation rotation : Piece.Rotation.all()) {
                         final int pieceLit = variables.representingPiece(rowIndex, columnIndex, pieceIndex, rotation);
-                        final Piece piece = board.piece(pieceIndex).rotate(rotation);
+                        final Piece piece = game.piece(pieceIndex).rotate(rotation);
                         for (final Piece.Border border : Piece.Border.all()) {
                             final int color = piece.colorTo(border);
                             final int pieceBorder = variables.representingBorder(rowIndex, columnIndex, border, color);

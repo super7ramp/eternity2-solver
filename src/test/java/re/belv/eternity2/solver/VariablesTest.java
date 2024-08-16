@@ -1,21 +1,30 @@
 package re.belv.eternity2.solver;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 final class VariablesTest {
 
+    private Variables variables;
+
+    @BeforeEach
+    void setup() {
+        final var board = new Game(new Piece[]{
+                new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3), new Piece(2, 0, 1, 2, 3),
+                new Piece(3, 0, 1, 2, 3), new Piece(4, 0, 1, 2, 3), new Piece(5, 0, 1, 2, 3),
+                new Piece(6, 0, 1, 2, 3), new Piece(7, 0, 1, 2, 3), new Piece(8, 0, 1, 2, 3),
+        }, new Piece[][]{
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+        });
+        variables = new Variables(board);
+    }
+
     @Test
     void representingPiece() {
-        final var board = new Board(new Piece[][]{
-                {new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3), new Piece(2, 0, 1, 2, 3)},
-                {new Piece(3, 0, 1, 2, 3), new Piece(4, 0, 1, 2, 3), new Piece(5, 0, 1, 2, 3)},
-                {new Piece(6, 0, 1, 2, 3), new Piece(7, 0, 1, 2, 3), new Piece(8, 0, 1, 2, 3)},
-
-        });
-        final var variables = new Variables(board);
-
         assertThat(variables.representingPiece(0, 0, 0, Piece.Rotation.PLUS_0)).isEqualTo(1);
         assertThat(variables.representingPiece(0, 0, 0, Piece.Rotation.PLUS_90)).isEqualTo(2);
         assertThat(variables.representingPiece(0, 0, 0, Piece.Rotation.PLUS_180)).isEqualTo(3);
@@ -31,25 +40,11 @@ final class VariablesTest {
 
     @Test
     void representingPieceCount() {
-        final var board = new Board(new Piece[][]{
-                {new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3), new Piece(2, 0, 1, 2, 3)},
-                {new Piece(3, 0, 1, 2, 3), new Piece(4, 0, 1, 2, 3), new Piece(5, 0, 1, 2, 3)},
-                {new Piece(6, 0, 1, 2, 3), new Piece(7, 0, 1, 2, 3), new Piece(8, 0, 1, 2, 3)},
-
-        });
-        final var variables = new Variables(board);
         assertThat(variables.representingPieceCount()).isEqualTo(324);
     }
 
     @Test
     void representingBorder() {
-        final var board = new Board(new Piece[][]{
-                {new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3), new Piece(2, 0, 1, 2, 3)},
-                {new Piece(3, 0, 1, 2, 3), new Piece(4, 0, 1, 2, 3), new Piece(5, 0, 1, 2, 3)},
-                {new Piece(6, 0, 1, 2, 3), new Piece(7, 0, 1, 2, 3), new Piece(8, 0, 1, 2, 3)},
-
-        });
-        final var variables = new Variables(board);
 
         assertThat(variables.representingBorder(0, 0, Piece.Border.NORTH, 0)).isEqualTo(325);
         assertThat(variables.representingBorder(0, 0, Piece.Border.NORTH, 1)).isEqualTo(326);
@@ -67,25 +62,11 @@ final class VariablesTest {
 
     @Test
     void representingBorderCount() {
-        final var board = new Board(new Piece[][]{
-                {new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3), new Piece(2, 0, 1, 2, 3)},
-                {new Piece(3, 0, 1, 2, 3), new Piece(4, 0, 1, 2, 3), new Piece(5, 0, 1, 2, 3)},
-                {new Piece(6, 0, 1, 2, 3), new Piece(7, 0, 1, 2, 3), new Piece(8, 0, 1, 2, 3)},
-
-        });
-        final var variables = new Variables(board);
         assertThat(variables.representingBorderCount()).isEqualTo(144);
     }
 
     @Test
     void variableCount() {
-        final var board = new Board(new Piece[][]{
-                {new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3), new Piece(2, 0, 1, 2, 3)},
-                {new Piece(3, 0, 1, 2, 3), new Piece(4, 0, 1, 2, 3), new Piece(5, 0, 1, 2, 3)},
-                {new Piece(6, 0, 1, 2, 3), new Piece(7, 0, 1, 2, 3), new Piece(8, 0, 1, 2, 3)},
-
-        });
-        final var variables = new Variables(board);
         assertThat(variables.count()).isEqualTo(144 + 324);
     }
 }

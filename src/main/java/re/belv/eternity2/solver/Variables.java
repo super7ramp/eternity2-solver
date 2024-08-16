@@ -14,15 +14,15 @@ package re.belv.eternity2.solver;
 final class Variables {
 
     /** The problem to solve. */
-    private final Board board;
+    private final Game game;
 
     /**
      * Constructs an instance.
      *
-     * @param board the board to solve
+     * @param game the board to solve
      */
-    Variables(final Board board) {
-        this.board = board;
+    Variables(final Game game) {
+        this.game = game;
     }
 
     /**
@@ -68,17 +68,17 @@ final class Variables {
      * @return the variable
      */
     int representingPiece(final int rowIndex, final int columnIndex, final int pieceIndex, final Piece.Rotation rotation) {
-        if (rowIndex >= board.rowCount()) {
+        if (rowIndex >= game.rowCount()) {
             throw new IllegalArgumentException("Row index out of bounds: " + rowIndex);
         }
-        if (columnIndex >= board.columnCount()) {
+        if (columnIndex >= game.columnCount()) {
             throw new IllegalArgumentException("Column index out of bounds: " + columnIndex);
         }
-        if (pieceIndex >= board.piecesCount()) {
+        if (pieceIndex >= game.piecesCount()) {
             throw new IllegalArgumentException("Piece index out of bounds: " + pieceIndex);
         }
-        return rowIndex * board.columnCount() * board.piecesCount() * Piece.Rotation.count()
-                + columnIndex * board.piecesCount() * Piece.Rotation.count()
+        return rowIndex * game.columnCount() * game.piecesCount() * Piece.Rotation.count()
+                + columnIndex * game.piecesCount() * Piece.Rotation.count()
                 + pieceIndex * Piece.Rotation.count()
                 + rotation.ordinal()
                 + 1; // variables start at 1
@@ -90,7 +90,7 @@ final class Variables {
      * @return the  number of variables representing pieces
      */
     int representingPieceCount() {
-        return board.rowCount() * board.columnCount() * board.piecesCount() * Piece.Rotation.count();
+        return game.rowCount() * game.columnCount() * game.piecesCount() * Piece.Rotation.count();
     }
 
     /**
@@ -134,19 +134,19 @@ final class Variables {
      * @return the variable of the given color at the given border at the given row and column.
      */
     int representingBorder(final int rowIndex, final int columnIndex, final Piece.Border border, final int colorIndex) {
-        if (rowIndex >= board.rowCount()) {
+        if (rowIndex >= game.rowCount()) {
             throw new IllegalArgumentException("Row index out of bounds: " + rowIndex);
         }
-        if (columnIndex >= board.columnCount()) {
+        if (columnIndex >= game.columnCount()) {
             throw new IllegalArgumentException("Column index out of bounds: " + columnIndex);
         }
-        if (colorIndex >= board.colorCount()) {
+        if (colorIndex >= game.colorCount()) {
             throw new IllegalArgumentException("Color index out of bounds: " + colorIndex);
         }
         return representingPieceCount() + 1
-                + rowIndex * board.columnCount() * Piece.Border.count() * board.colorCount()
-                + columnIndex * Piece.Border.count() * board.colorCount()
-                + border.ordinal() * board.colorCount()
+                + rowIndex * game.columnCount() * Piece.Border.count() * game.colorCount()
+                + columnIndex * Piece.Border.count() * game.colorCount()
+                + border.ordinal() * game.colorCount()
                 + colorIndex;
     }
 
@@ -156,7 +156,7 @@ final class Variables {
      * @return the number of variables representing borders
      */
     int representingBorderCount() {
-        return board.colorCount() * board.borderCount();
+        return game.colorCount() * game.borderCount();
     }
 
     /**
@@ -175,14 +175,14 @@ final class Variables {
      * @return the pieces
      */
     Piece[][] backToPieces(final int[] model) {
-        final var pieces = new Piece[board.rowCount()][board.columnCount()];
-        for (int rowIndex = 0; rowIndex < board.rowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < board.columnCount(); columnIndex++) {
-                for (int pieceIndex = 0; pieceIndex < board.piecesCount(); pieceIndex++) {
+        final var pieces = new Piece[game.rowCount()][game.columnCount()];
+        for (int rowIndex = 0; rowIndex < game.rowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < game.columnCount(); columnIndex++) {
+                for (int pieceIndex = 0; pieceIndex < game.piecesCount(); pieceIndex++) {
                     for (final Piece.Rotation rotation : Piece.Rotation.all()) {
                         final int pieceVariable = representingPiece(rowIndex, columnIndex, pieceIndex, rotation);
                         if (model[pieceVariable - 1] > 0) {
-                            final Piece piece = board.piece(pieceIndex).rotate(rotation);
+                            final Piece piece = game.piece(pieceIndex).rotate(rotation);
                             pieces[rowIndex][columnIndex] = piece;
                         }
                     }
