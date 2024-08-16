@@ -14,9 +14,10 @@ import java.util.Iterator;
  * <p>
  * Example of usage:
  * <pre>{@code
- * final var pieces = new Piece[][]{
- *      {new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3)},
- *      {new Piece(2, 0, 1, 2, 3), new Piece(3, 0, 1, 2, 3)},
+ * final var pieces = new Piece[]{new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3), new Piece(2, 0, 1, 2, 3), new Piece(3, 0, 1, 2, 3)};
+ * final var initialBoard = new Piece[][]{
+ *     {null, null},
+ *     {null, null}
  * };
  * final var solver = new Solver();
  * final Iterator<Piece[][]> solutionIterator = solver.solve(pieces);
