@@ -1,11 +1,12 @@
 package re.belv.eternity2.solver;
 
 import org.sat4j.specs.ISolver;
-import org.sat4j.specs.TimeoutException;
 import org.sat4j.tools.ModelIterator;
 
+import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.concurrent.*;
 
 /**
  * An iterator of solver solutions.
@@ -51,14 +52,33 @@ final class SolutionIterator implements Iterator<Piece[][]> {
         if (nextModel != null) {
             return nextModel;
         }
-        try {
-            final boolean isSatisfiable = backend.isSatisfiable();
-            if (isSatisfiable) {
-                nextModel = backend.model();
-            }
-        } catch (final TimeoutException e) {
-            // ignore
+
+        try (final ScheduledExecutorService executor = Executors.newScheduledThreadPool(2)) {
+
+            final var pw = new PrintWriter(System.out, true);
+            executor.scheduleAtFixedRate(() -> {
+                pw.println("5s elapsed, here are some statistics:");
+                backend.printStat(pw);
+                pw.println("---------------------");
+            }, 5, 5, TimeUnit.SECONDS);
+
+            final Future<int[]> futureNextModel = executor.submit(() -> {
+                if (backend.isSatisfiable()) {
+                    return backend.model();
+                }
+                return null;
+            });
+
+            nextModel = futureNextModel.get();
+
+        } catch (final InterruptedException e) {
+            // This forces the solver to stop.
+            backend.expireTimeout();
+            Thread.currentThread().interrupt();
+        } catch (final ExecutionException e) {
+            throw new IllegalStateException(e);
         }
+
         return nextModel;
     }
 
