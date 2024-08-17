@@ -118,6 +118,7 @@ final class SolverTest {
         final Piece[][] initialBoard = IntStream.range(0, 16)
                 .mapToObj(i -> new Piece[16])
                 .toArray(Piece[][]::new);
+        initialBoard[7][8] = pieces[138];
 
         final Iterator<Piece[][]> solutionIterator = solver.solve(pieces, initialBoard);
 
