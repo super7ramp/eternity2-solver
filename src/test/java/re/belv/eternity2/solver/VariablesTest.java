@@ -11,15 +11,13 @@ final class VariablesTest {
 
     @BeforeEach
     void setup() {
-        final var board = new Game(new Piece[]{
+        final var pieces = new Piece[]{
                 new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3), new Piece(2, 0, 1, 2, 3),
                 new Piece(3, 0, 1, 2, 3), new Piece(4, 0, 1, 2, 3), new Piece(5, 0, 1, 2, 3),
                 new Piece(6, 0, 1, 2, 3), new Piece(7, 0, 1, 2, 3), new Piece(8, 0, 1, 2, 3),
-        }, new Piece[][]{
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-        });
+        };
+        final var initialBoard = new Piece[3][3];
+        final var board = new Game(pieces, initialBoard);
         variables = new Variables(board);
     }
 

@@ -115,9 +115,7 @@ final class SolverTest {
     @Disabled("too hard")
     void solve_16x16() throws IOException, URISyntaxException {
         final Piece[] pieces = readFps("EternityII-256-Bis-ORIGINAL.fps");
-        final Piece[][] initialBoard = IntStream.range(0, 16)
-                .mapToObj(i -> new Piece[16])
-                .toArray(Piece[][]::new);
+        final Piece[][] initialBoard = new Piece[16][16];
         initialBoard[7][8] = pieces[138];
 
         final Iterator<Piece[][]> solutionIterator = solver.solve(pieces, initialBoard);
