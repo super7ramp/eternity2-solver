@@ -1,6 +1,7 @@
 package re.belv.eternity2.solver;
 
 import org.sat4j.specs.ISolver;
+import org.sat4j.specs.TimeoutException;
 import org.sat4j.tools.ModelIterator;
 
 import java.io.PrintWriter;
@@ -13,11 +14,17 @@ import java.util.concurrent.*;
  */
 final class SolutionIterator implements Iterator<Piece[][]> {
 
+    /** The interval at which to print statistics. */
+    private static final int PRINT_STATS_INTERVAL_IN_SECONDS = 5;
+
     /** The problem variables. */
     private final Variables variables;
 
     /** The solver backend decorated with {@link ModelIterator}. */
     private final ISolver backend;
+
+    /** Printer for statistics. */
+    private final PrintWriter printer;
 
     /** The model to return on call to {@link #next()}. */
     private int[] nextModel;
@@ -31,6 +38,7 @@ final class SolutionIterator implements Iterator<Piece[][]> {
     SolutionIterator(final Variables variables, final ISolver backend) {
         this.variables = variables;
         this.backend = new ModelIterator(backend);
+        printer = new PrintWriter(System.out, true);
     }
 
     @Override
@@ -54,23 +62,10 @@ final class SolutionIterator implements Iterator<Piece[][]> {
         }
 
         try (final ScheduledExecutorService executor = Executors.newScheduledThreadPool(2)) {
-
-            final var pw = new PrintWriter(System.out, true);
-            executor.scheduleAtFixedRate(() -> {
-                pw.println("5s elapsed, here are some statistics:");
-                backend.printStat(pw);
-                pw.println("---------------------");
-            }, 5, 5, TimeUnit.SECONDS);
-
-            final Future<int[]> futureNextModel = executor.submit(() -> {
-                if (backend.isSatisfiable()) {
-                    return backend.model();
-                }
-                return null;
-            });
-
+            executor.scheduleAtFixedRate(this::printStats, PRINT_STATS_INTERVAL_IN_SECONDS,
+                    PRINT_STATS_INTERVAL_IN_SECONDS, TimeUnit.SECONDS);
+            final Future<int[]> futureNextModel = executor.submit(this::lookForSolution);
             nextModel = futureNextModel.get();
-
         } catch (final InterruptedException e) {
             // This forces the solver to stop.
             backend.expireTimeout();
@@ -82,4 +77,13 @@ final class SolutionIterator implements Iterator<Piece[][]> {
         return nextModel;
     }
 
+    private void printStats() {
+        printer.println(PRINT_STATS_INTERVAL_IN_SECONDS + "s elapsed, here are some statistics:");
+        backend.printStat(printer);
+        printer.println("---------------------");
+    }
+
+    private int[] lookForSolution() throws TimeoutException {
+        return backend.isSatisfiable() ? backend.model() : null;
+    }
 }

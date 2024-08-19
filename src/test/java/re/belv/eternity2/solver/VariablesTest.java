@@ -17,8 +17,8 @@ final class VariablesTest {
                 new Piece(6, 0, 1, 2, 3), new Piece(7, 0, 1, 2, 3), new Piece(8, 0, 1, 2, 3),
         };
         final var initialBoard = new Piece[3][3];
-        final var board = new Game(pieces, initialBoard);
-        variables = new Variables(board);
+        final var game = new Game(pieces, initialBoard);
+        variables = new Variables(game);
     }
 
     @Test
