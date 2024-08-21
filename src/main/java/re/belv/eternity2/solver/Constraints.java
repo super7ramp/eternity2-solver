@@ -18,14 +18,14 @@ final class Constraints {
     /** The problem variables. */
     private final Variables variables;
 
-    /** The board. */
+    /** The game. */
     private final Game game;
 
     /**
      * Constructs an instance.
      *
      * @param variables the problem variables
-     * @param game      the board
+     * @param game      the game
      */
     Constraints(final Variables variables, final Game game) {
         this.variables = variables;

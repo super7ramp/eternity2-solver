@@ -53,9 +53,9 @@ public final class Solver {
      * @throws IllegalArgumentException if given game is invalid (e.g. number of pieces inconsistent with board dimensions)
      */
     public Iterator<Piece[][]> solve(final Piece[] pieces, final Piece[][] initialBoard) {
-        final var board = new Game(pieces, initialBoard);
-        final var variables = new Variables(board);
-        final var constraints = new Constraints(variables, board);
+        final var game = new Game(pieces, initialBoard);
+        final var variables = new Variables(game);
+        final var constraints = new Constraints(variables, game);
 
         backend.reset();
         backend.newVar(variables.count());
