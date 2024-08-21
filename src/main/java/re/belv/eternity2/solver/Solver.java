@@ -22,7 +22,7 @@ import java.util.Iterator;
  * final var solver = new Solver();
  * final Iterator<Piece[][]> solutionIterator = solver.solve(pieces);
  * while (solutionIterator.hasNext()) {
- *     System.out.println(solutionIterator.next());
+ *     System.out.println(Arrays.deepToString(solutionIterator.next()));
  * }
  * </pre>
  */
@@ -35,7 +35,7 @@ public final class Solver {
      * Creates an instance.
      */
     public Solver() {
-        this.backend = SolverFactory.newLight();
+        backend = SolverFactory.newLight();
     }
 
     /**
