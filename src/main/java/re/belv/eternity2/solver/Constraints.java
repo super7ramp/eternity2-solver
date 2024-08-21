@@ -64,7 +64,7 @@ final class Constraints {
                         positionPieceRotations.push(variables.representingPiece(rowIndex, columnIndex, pieceIndex, rotation));
                     }
                     final int positionPiece = solver.nextFreeVarId(true);
-                    gator.xor(positionPiece, positionPieceRotations);
+                    gator.or(positionPiece, positionPieceRotations);
                     positionPieces.push(positionPiece);
                 }
                 solver.addExactly(positionPieces, 1);
