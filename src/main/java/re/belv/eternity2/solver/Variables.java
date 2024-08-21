@@ -178,12 +178,14 @@ final class Variables {
         final var pieces = new Piece[game.rowCount()][game.columnCount()];
         for (int rowIndex = 0; rowIndex < game.rowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < game.columnCount(); columnIndex++) {
+                pieceLoop:
                 for (int pieceIndex = 0; pieceIndex < game.piecesCount(); pieceIndex++) {
                     for (final Piece.Rotation rotation : Piece.Rotation.all()) {
                         final int pieceVariable = representingPiece(rowIndex, columnIndex, pieceIndex, rotation);
                         if (model[pieceVariable - 1] > 0) {
                             final Piece piece = game.piece(pieceIndex).rotate(rotation);
                             pieces[rowIndex][columnIndex] = piece;
+                            break pieceLoop;
                         }
                     }
                 }
