@@ -14,15 +14,26 @@ import java.util.Iterator;
  * <p>
  * Example of usage:
  * <pre>{@code
- * final var pieces = new Piece[]{new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3), new Piece(2, 0, 1, 2, 3), new Piece(3, 0, 1, 2, 3)};
+ * // The list of pieces (id, north color, east color, south color, west color).
+ * final var pieces = new Piece[]{
+ *     new Piece(0, 0, 1, 2, 3),
+ *     new Piece(1, 0, 1, 2, 3),
+ *     new Piece(2, 0, 1, 2, 3),
+ *     new Piece(3, 0, 1, 2, 3),
+ * };
+ *
+ * // The board is a 2x2 grid. The bottom right piece is fixed.
  * final var initialBoard = new Piece[][]{
  *     {null, null},
- *     {null, null}
+ *     {null, pieces[1].rotate(Piece.Rotation.PLUS_90)}
  * };
+ *
+ * // Instantiate the solver and solve the game.
  * final var solver = new Solver();
- * final Iterator<Piece[][]> solutionIterator = solver.solve(pieces);
+ * final Iterator<Piece[][]> solutionIterator = solver.solve(pieces, initialBoard);
  * while (solutionIterator.hasNext()) {
- *     System.out.println(Arrays.deepToString(solutionIterator.next()));
+ *     final Piece[][] solution = solutionIterator.next();
+ *     System.out.println(Arrays.deepToString(solution));
  * }
  * </pre>
  */
