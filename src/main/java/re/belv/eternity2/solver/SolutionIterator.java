@@ -14,8 +14,8 @@ import java.util.concurrent.*;
  */
 final class SolutionIterator implements Iterator<Piece[][]> {
 
-    /** The interval at which to print statistics. */
-    private static final int PRINT_STATS_INTERVAL_IN_SECONDS = 5;
+    /** The interval at which to print statistics, in seconds. */
+    private static final int PRINT_STATS_INTERVAL = 5;
 
     /** The problem variables. */
     private final Variables variables;
@@ -62,10 +62,8 @@ final class SolutionIterator implements Iterator<Piece[][]> {
         }
 
         try (final ScheduledExecutorService executor = Executors.newScheduledThreadPool(2)) {
-            executor.scheduleAtFixedRate(this::printStats, PRINT_STATS_INTERVAL_IN_SECONDS,
-                    PRINT_STATS_INTERVAL_IN_SECONDS, TimeUnit.SECONDS);
-            final Future<int[]> futureNextModel = executor.submit(this::lookForSolution);
-            nextModel = futureNextModel.get();
+            executor.scheduleAtFixedRate(this::printStats, PRINT_STATS_INTERVAL, PRINT_STATS_INTERVAL, TimeUnit.SECONDS);
+            nextModel = executor.submit(this::lookForSolution).get();
         } catch (final InterruptedException e) {
             // This forces the solver to stop.
             backend.expireTimeout();
@@ -78,7 +76,7 @@ final class SolutionIterator implements Iterator<Piece[][]> {
     }
 
     private void printStats() {
-        printer.println(PRINT_STATS_INTERVAL_IN_SECONDS + "s elapsed, here are some statistics:");
+        printer.println(PRINT_STATS_INTERVAL + "s elapsed, here are some statistics:");
         backend.printStat(printer);
         printer.println("---------------------");
     }
