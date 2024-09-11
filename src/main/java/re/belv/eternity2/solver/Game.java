@@ -25,16 +25,14 @@ final class Game {
      * @throws IllegalArgumentException if the number of pieces is inconsistent with the given row and column counts
      */
     Game(final Piece[] pieces, final Piece[][] initialBoard) {
-        Objects.requireNonNull(pieces);
-        Objects.requireNonNull(initialBoard);
-        this.pieces = pieces;
-        this.initialBoard = initialBoard;
-        this.rowCount = initialBoard.length;
-        this.columnCount = rowCount == 0 ? 0 : initialBoard[0].length;
+        this.pieces = Objects.requireNonNull(pieces);
+        this.initialBoard = Objects.requireNonNull(initialBoard);
+        rowCount = initialBoard.length;
+        columnCount = rowCount == 0 ? 0 : initialBoard[0].length;
         if (rowCount * columnCount != pieces.length) {
             throw new IllegalArgumentException("Inconsistent number of pieces: " + pieces.length + " != " + rowCount + " * " + columnCount);
         }
-        this.colorCount = (int) Arrays.stream(pieces)
+        colorCount = (int) Arrays.stream(pieces)
                 .flatMapToInt(piece -> IntStream.of(piece.northColor(), piece.eastColor(), piece.southColor(), piece.westColor()))
                 .distinct()
                 .count();
