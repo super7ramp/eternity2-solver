@@ -23,10 +23,8 @@ import java.util.Iterator;
  * };
  *
  * // The board is a 2x2 grid. The bottom right piece is fixed.
- * final var initialBoard = new Piece[][]{
- *     {null, null},
- *     {null, pieces[1].rotate(Piece.Rotation.PLUS_90)}
- * };
+ * final var initialBoard = new Piece[2][2];
+ * initialBoard[1][1] = pieces[1].rotate(Piece.Rotation.PLUS_90);
  *
  * // Instantiate the solver and solve the game.
  * final var solver = new Solver();
