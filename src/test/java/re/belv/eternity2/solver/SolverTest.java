@@ -31,27 +31,23 @@ final class SolverTest {
     @Test
     void solve_1x2() {
         final var pieces = new Piece[]{new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3)};
-        final var initialBoard = new Piece[][]{{null, null}};
+        final var initialBoard = new Piece[1][2];
 
-        final Iterator<Piece[][]> solutionIterator = solver.solve(pieces, initialBoard);
+        final Iterator<Piece[][]> solutions = solver.solve(pieces, initialBoard);
 
-        assertThat(solutionIterator).toIterable()
+        assertThat(solutions).toIterable()
                 .contains(new Piece[][]{{new Piece(0, 2, 3, 0, 1), new Piece(1, 0, 1, 2, 3)},})
                 .hasSize(8);
     }
 
     @Test
     void solve_2x1() {
-        final var pieces = new Piece[]{new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3),
-        };
-        final var initialBoard = new Piece[][]{
-                {null},
-                {null},
-        };
+        final var pieces = new Piece[]{new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3)};
+        final var initialBoard = new Piece[2][1];
 
-        final Iterator<Piece[][]> solutionIterator = solver.solve(pieces, initialBoard);
+        final Iterator<Piece[][]> solutions = solver.solve(pieces, initialBoard);
 
-        assertThat(solutionIterator).toIterable()
+        assertThat(solutions).toIterable()
                 .contains(new Piece[][]{
                         {new Piece(0, 2, 3, 0, 1)},
                         {new Piece(1, 0, 1, 2, 3)},
@@ -65,14 +61,11 @@ final class SolverTest {
                 new Piece(0, 0, 1, 2, 3), new Piece(1, 0, 1, 2, 3),
                 new Piece(2, 0, 1, 2, 3), new Piece(3, 0, 1, 2, 3),
         };
-        final var initialBoard = new Piece[][]{
-                {null, null},
-                {null, null},
-        };
+        final var initialBoard = new Piece[2][2];
 
-        final Iterator<Piece[][]> solutionIterator = solver.solve(pieces, initialBoard);
+        final Iterator<Piece[][]> solutions = solver.solve(pieces, initialBoard);
 
-        assertThat(solutionIterator).toIterable()
+        assertThat(solutions).toIterable()
                 .contains(new Piece[][]{
                         {new Piece(1, 0, 1, 2, 3), new Piece(0, 2, 3, 0, 1)},
                         {new Piece(2, 2, 3, 0, 1), new Piece(3, 0, 1, 2, 3)},
@@ -89,17 +82,12 @@ final class SolverTest {
                 new Piece(15, 1, 2, 5, 3), new Piece(16, 6, 8, 4, 5), new Piece(17, 4, 8, 5, 5), new Piece(18, 6, 8, 7, 6), new Piece(19, 4, 8, 6, 8),
                 new Piece(20, 6, 7, 6, 7), new Piece(21, 6, 5, 8, 4), new Piece(22, 5, 8, 5, 8), new Piece(23, 5, 7, 7, 7), new Piece(24, 6, 6, 6, 5),
         };
-        final var initialBoard = new Piece[][]{
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, pieces[19].rotate(PLUS_90), null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-        };
+        final var initialBoard = new Piece[5][5];
+        initialBoard[2][2] = pieces[19].rotate(PLUS_90);
 
-        final Iterator<Piece[][]> solutionIterator = solver.solve(pieces, initialBoard);
+        final Iterator<Piece[][]> solutions = solver.solve(pieces, initialBoard);
 
-        assertThat(solutionIterator).toIterable()
+        assertThat(solutions).toIterable()
                 .contains(new Piece[][]{
                         {pieces[2], pieces[13], pieces[6], pieces[12], pieces[1].rotate(PLUS_90)},
                         {pieces[11].rotate(PLUS_270), pieces[23].rotate(PLUS_90), pieces[22].rotate(PLUS_90), pieces[24], pieces[10].rotate(PLUS_90)},
@@ -117,10 +105,10 @@ final class SolverTest {
         final Piece[][] initialBoard = new Piece[16][16];
         initialBoard[7][8] = pieces[138];
 
-        final Iterator<Piece[][]> solutionIterator = solver.solve(pieces, initialBoard);
+        final Iterator<Piece[][]> solutions = solver.solve(pieces, initialBoard);
 
-        if (solutionIterator.hasNext()) {
-            System.out.println(Arrays.deepToString(solutionIterator.next()));
+        if (solutions.hasNext()) {
+            System.out.println(Arrays.deepToString(solutions.next()));
         } else {
             System.out.println("No solution!");
         }
