@@ -30,9 +30,9 @@ import java.util.Iterator;
  *
  * // Instantiate the solver and solve the game.
  * final var solver = new Solver();
- * final Iterator<Piece[][]> solutionIterator = solver.solve(pieces, initialBoard);
- * while (solutionIterator.hasNext()) {
- *     final Piece[][] solution = solutionIterator.next();
+ * final Iterator<Piece[][]> solutions = solver.solve(pieces, initialBoard);
+ * while (solutions.hasNext()) {
+ *     final Piece[][] solution = solutions.next();
  *     System.out.println(Arrays.deepToString(solution));
  * }
  * </pre>
@@ -76,6 +76,6 @@ public final class Solver {
             return Collections.emptyIterator();
         }
 
-        return new SolutionIterator(variables, backend);
+        return new Solutions(variables, backend);
     }
 }

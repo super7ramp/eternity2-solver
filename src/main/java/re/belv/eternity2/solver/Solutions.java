@@ -12,7 +12,7 @@ import java.util.concurrent.*;
 /**
  * An iterator of solver solutions.
  */
-final class SolutionIterator implements Iterator<Piece[][]> {
+final class Solutions implements Iterator<Piece[][]> {
 
     /** The interval at which to print statistics, in seconds. */
     private static final int PRINT_STATS_INTERVAL = 5;
@@ -35,7 +35,7 @@ final class SolutionIterator implements Iterator<Piece[][]> {
      * @param variables the problem variables
      * @param backend   the solver backend
      */
-    SolutionIterator(final Variables variables, final ISolver backend) {
+    Solutions(final Variables variables, final ISolver backend) {
         this.variables = variables;
         this.backend = new ModelIterator(backend);
         printer = new PrintWriter(System.out, true);
