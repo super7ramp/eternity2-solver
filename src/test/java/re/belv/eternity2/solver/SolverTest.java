@@ -113,7 +113,7 @@ final class SolverTest {
     @Test
     @Disabled("too hard")
     void solve_16x16() throws IOException, URISyntaxException {
-        final Piece[] pieces = readFps("EternityII-256-Bis-ORIGINAL.fps");
+        final Piece[] pieces = readFps();
         final Piece[][] initialBoard = new Piece[16][16];
         initialBoard[7][8] = pieces[138];
 
@@ -126,8 +126,8 @@ final class SolverTest {
         }
     }
 
-    private static Piece[] readFps(final String fileName) throws URISyntaxException, IOException {
-        final Path filePath = Path.of(SolverTest.class.getResource("/" + fileName).toURI());
+    private static Piece[] readFps() throws URISyntaxException, IOException {
+        final Path filePath = Path.of(SolverTest.class.getResource("/EternityII-256-Bis-ORIGINAL.fps").toURI());
         try (final Stream<String> lines = Files.lines(filePath)) {
             return lines
                     .dropWhile(not("[Bordure]"::equals))
