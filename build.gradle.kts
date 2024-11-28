@@ -1,5 +1,6 @@
 plugins {
     java
+    `maven-publish`
 }
 
 group = "re.belv"
@@ -14,6 +15,28 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.11.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.assertj:assertj-core:3.26.3")
+}
+
+java {
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("eternity2Solver") {
+            from(components["java"])
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/super7ramp/eternity2-solver")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
 }
 
 tasks.test {
