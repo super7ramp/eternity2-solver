@@ -48,24 +48,19 @@ final class Constraints {
     }
 
     /**
-     * Constrains the given solver so that there is exactly one piece in each position.
+     * Constrains the given solver so that there is exactly one piece with exactly one rotation, in each position.
      *
      * @param solver the solver
      * @throws ContradictionException when a constraint is trivially unsatisfiable
      */
     void addExactlyOnePiecePerPositionTo(final ISolver solver) throws ContradictionException {
-        final var gator = new GateTranslator(solver);
-        final var positionPieces = new VecInt(game.piecesCount());
+        final var positionPieces = new VecInt(game.piecesCount() * Piece.Rotation.count());
         for (int rowIndex = 0; rowIndex < game.rowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < game.columnCount(); columnIndex++) {
                 for (int pieceIndex = 0; pieceIndex < game.piecesCount(); pieceIndex++) {
-                    final var positionPieceRotations = new VecInt(Piece.Rotation.count());
                     for (final Piece.Rotation rotation : Piece.Rotation.all()) {
-                        positionPieceRotations.push(variables.representingPiece(rowIndex, columnIndex, pieceIndex, rotation));
+                        positionPieces.push(variables.representingPiece(rowIndex, columnIndex, pieceIndex, rotation));
                     }
-                    final int positionPiece = solver.nextFreeVarId(true);
-                    gator.or(positionPiece, positionPieceRotations);
-                    positionPieces.push(positionPiece);
                 }
                 solver.addExactly(positionPieces, 1);
                 positionPieces.clear();
