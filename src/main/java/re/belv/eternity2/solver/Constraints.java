@@ -3,7 +3,6 @@ package re.belv.eternity2.solver;
 import org.sat4j.core.VecInt;
 import org.sat4j.specs.ContradictionException;
 import org.sat4j.specs.ISolver;
-import org.sat4j.tools.GateTranslator;
 
 import java.util.Optional;
 
@@ -154,8 +153,6 @@ final class Constraints {
      * @throws ContradictionException when a constraint is trivially unsatisfiable
      */
     void addBorderColorsMatchPiecesTo(final ISolver solver) throws ContradictionException {
-        final var gator = new GateTranslator(solver);
-        final var pieceBorders = new VecInt(Piece.Border.count());
         for (int rowIndex = 0; rowIndex < game.rowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < game.columnCount(); columnIndex++) {
                 for (int pieceIndex = 0; pieceIndex < game.piecesCount(); pieceIndex++) {
@@ -165,13 +162,8 @@ final class Constraints {
                         for (final Piece.Border border : Piece.Border.all()) {
                             final int color = piece.colorTo(border);
                             final int pieceBorder = variables.representingBorder(rowIndex, columnIndex, border, color);
-                            pieceBorders.push(pieceBorder);
+                            solver.addClause(new VecInt(new int[]{-pieceLit, pieceBorder}));
                         }
-                        final int pieceBordersLit = solver.nextFreeVarId(true);
-                        gator.and(pieceBordersLit, pieceBorders);
-                        // pieceLit => pieceBordersLit
-                        solver.addClause(new VecInt(new int[]{-pieceLit, pieceBordersLit}));
-                        pieceBorders.clear();
                     }
                 }
             }
