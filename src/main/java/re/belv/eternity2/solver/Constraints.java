@@ -38,12 +38,12 @@ final class Constraints {
      * @throws ContradictionException if a constraint is trivially unsatisfiable
      */
     void addAllConstraintsTo(final ISolver solver) throws ContradictionException {
+        addInitialBoardPiecesAreFixedTo(solver);
         addExactlyOnePiecePerPositionTo(solver);
         addExactlyOnePositionPerPieceTo(solver);
         addExactlyOneColorPerBorderTo(solver);
         addAdjacentBordersMustHaveSameColorTo(solver);
         addBorderColorsMatchPiecesTo(solver);
-        addInitialBoardPiecesAreFixedTo(solver);
     }
 
     /**
