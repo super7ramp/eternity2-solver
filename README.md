@@ -37,6 +37,6 @@ final var solver = new Solver();
 final Iterator<Piece[][]> solutions = solver.solve(pieces, initialBoard);
 while(solutions.hasNext()){
     final Piece[][] solution = solutions.next();
-    System.out.println(Arrays.deepToString(solution));
+    IO.println(Arrays.deepToString(solution));
 }
 ```
